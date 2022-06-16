@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.colldesign.comment.dao.TbCommentIndexMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.colldesign.comment.model.TbCommentIndex">
+        <id column="id" property="id"/>
+        <result column="document_id" property="documentId"/>
+        <result column="element_id" property="elementId"/>
+        <result column="workspace_id" property="workspaceId"/>
+        <result column="version_id" property="versionId"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="object_id" property="objectId"/>
+        <result column="object_type" property="objectType"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="resolved_time" property="resolvedTime"/>
+        <result column="resolved_user_id" property="resolvedUserId"/>
+        <result column="reopened_time" property="reopenedTime"/>
+        <result column="reopened_user_id" property="reopenedUserId"/>
+        <result column="state" property="state"/>
+        <result column="reply_count" property="replyCount"/>
+        
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , document_id, element_id, workspace_id, version_id, parent_id, object_id, object_type, create_time, create_user_id, update_time, update_user_id, resolve_time, resolve_user_id, reopen_time, reopen_user_id, state,reply_count
+    </sql>
+
+
+</mapper>
