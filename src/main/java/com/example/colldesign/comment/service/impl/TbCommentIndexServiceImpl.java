@@ -37,8 +37,8 @@ public class TbCommentIndexServiceImpl extends ServiceImpl<TbCommentIndexMapper,
     }
 
     @Override
-    public String getObjectIdById(String commentId) {
-        return this.getBaseMapper().getObjectIdById(commentId);
+    public String getPojectIdById(String commentId) {
+        return this.getBaseMapper().getPojectIdById(commentId);
     }
 
     @Override

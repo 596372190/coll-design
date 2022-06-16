@@ -17,6 +17,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,6 @@ public class CommentServiceImpl implements CommentService {
         BeanUtil.copyProperties(commentVo,commentIndex);
         commentIndex.setCreateTime(DateUtil.date());
         commentIndex.setCreateUserId("123456");
-        commentIndex.setDocumentId(commentIndex.getObjectId());
         commentIndex.setId(UUID.randomUUID().toString().replace("-",""));
         commentIndexService.save(commentIndex);
         if(StrUtil.isNotBlank(commentVo.getParentId())){
@@ -53,7 +53,6 @@ public class CommentServiceImpl implements CommentService {
         commentInfo.setId(commentIndex.getId());
         commentInfoService.save(commentInfo);
         //仿造一个user
-        commentVo.setCreatedBy(UserVo.builder().name("aaa").id(commentIndex.getCreateUserId()).build());
         commentVo.setId(commentIndex.getId());
         return commentVo;
     }
@@ -68,6 +67,9 @@ public class CommentServiceImpl implements CommentService {
         //1.如果是子评论不能重开或关闭
         if(StrUtil.isNotBlank(commentIndex.getParentId())){
             commentVo.setCanResolveOrReopen(false);
+            commentVo.setTopLevel(false);
+        }else{
+            commentVo.setTopLevel(true);
         }
         return commentVo;
     }

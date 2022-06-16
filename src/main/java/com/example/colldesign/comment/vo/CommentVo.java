@@ -3,13 +3,15 @@ package com.example.colldesign.comment.vo;
 import cn.hutool.core.bean.BeanUtil;
 import com.example.colldesign.comment.model.TbCommentIndex;
 import com.example.colldesign.comment.model.TbCommentInfo;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
 @Data
 @ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentVo {
 
     private String id;
@@ -17,9 +19,9 @@ public class CommentVo {
     /**
      * 文档id
      */
-    private String documentId;
+    private String projectId;
 
-    private String elementId;
+    private String documentId;
 
     /**
      * 工作空间id
@@ -36,12 +38,8 @@ public class CommentVo {
      */
     private String parentId;
 
-    /**
-     * 文档对象id
-     */
-    private String objectId;
 
-    private int objectType;
+    private int documentType;
 
     /**
      * 创建时间
@@ -98,12 +96,16 @@ public class CommentVo {
 
     private boolean canResolveOrReopen;
 
+    private boolean topLevel;
+
+    private boolean isMark;
+    private String markId;
+    private String markType;
+
 
     public CommentVo(TbCommentIndex commentIndex, TbCommentInfo commentInfo){
         BeanUtil.copyProperties(commentInfo,this);
         BeanUtil.copyProperties(commentIndex,this);
     }
 
-    public CommentVo() {
-    }
 }

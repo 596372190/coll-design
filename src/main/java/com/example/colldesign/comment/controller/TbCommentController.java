@@ -1,29 +1,24 @@
 package com.example.colldesign.comment.controller;
 
 
-import cn.hutool.db.handler.PageResultHandler;
+import com.example.colldesign.comment.enums.CommentOperate;
+import com.example.colldesign.comment.model.TbCommentIndex;
 import com.example.colldesign.comment.service.CommentService;
 import com.example.colldesign.comment.service.ITbCommentIndexService;
+import com.example.colldesign.comment.service.impl.MessageService;
 import com.example.colldesign.comment.vo.CommentVo;
 import com.example.colldesign.comment.vo.query.CommentQuery;
 import com.example.colldesign.common.result.ApiResult;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.PageInterceptor;
-import io.swagger.annotations.ApiModel;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -38,8 +33,6 @@ public class TbCommentController {
 
     private Logger logger = LoggerFactory.getLogger(TbCommentController.class);
 
-    private Map<String, Set<String>> userWsMap = new ConcurrentHashMap<>();
-
     @Autowired
     private CommentService commentService;
 
@@ -47,16 +40,14 @@ public class TbCommentController {
     private ITbCommentIndexService commentIndexService;
 
     @Autowired
-    private SimpMessagingTemplate template;
+    private MessageService messageService;
 
-    @PostMapping("/joinDesign/{documentId}")
-    private void joinDesign(@PathVariable("documentId")String documentId, Principal principal){
-        if(userWsMap.containsKey(documentId)){
-            userWsMap.get(documentId).add(principal.getName());
-        }else {
-            Set<String> nameSet = new HashSet<>();
-            nameSet.add(principal.getName());
-            userWsMap.put(documentId,nameSet);
+    @PostMapping("/joinDesign/{projectId}")
+    public void joinDesign(@PathVariable("projectId") String projectId, Principal principal) {
+        try {
+            messageService.joinDesign(projectId, principal);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -65,11 +56,7 @@ public class TbCommentController {
         CommentVo vo = commentService.createComment(commentVo);
         ApiResult<CommentVo> success = ApiResult.SUCCESS(vo);
         //todo 异步提醒 或者放入队列提醒
-        Set<String> nameSet = userWsMap.get(commentVo.getObjectId());
-        String message=commentVo.getId();
-        for (String name : nameSet) {
-            template.convertAndSendToUser(name,"/queue/comment",message);
-        }
+        messageService.publishCommentMeassage(vo, CommentOperate.CREATE);
         return success;
     }
 
@@ -83,53 +70,45 @@ public class TbCommentController {
 
     @PostMapping("/{commentId}")
     public ApiResult<CommentVo> updateComment(@RequestBody CommentVo commentVo) {
-        CommentVo vo = commentService.updateComment(commentVo.getId(),commentVo.getMessage());
+        CommentVo vo = commentService.updateComment(commentVo.getId(), commentVo.getMessage());
         ApiResult<CommentVo> success = ApiResult.SUCCESS(vo);
         //todo 异步提醒 或者放入队列提醒
-        Set<String> nameSet = userWsMap.get(vo.getObjectId());
-        String message=vo.getId();
-        for (String name : nameSet) {
-            template.convertAndSendToUser(name,"/queue/comment",message);
-        }
+        messageService.publishCommentMeassage(vo, CommentOperate.UPDATE);
         return success;
     }
 
     @DeleteMapping("/{commentId}")
     @Transactional
     public ApiResult deleteComment(@PathVariable("commentId") String commentId) {
-        String objectIdById = commentIndexService.getObjectIdById(commentId);
+        TbCommentIndex commentIndex = commentIndexService.getById(commentId);
         boolean flag = commentService.deleteComment(commentId);
         ApiResult success = ApiResult.SUCCESS();
         //todo 异步提醒 或者放入队列提醒
-        Set<String> nameSet = userWsMap.get(objectIdById);
-        String message="delete"+commentId;
-        for (String name : nameSet) {
-            template.convertAndSendToUser(name,"/queue/comment",message);
-        }
+        messageService.publishCommentMeassage(new CommentVo(commentIndex, null), CommentOperate.DELETE);
         return success;
     }
 
     @PostMapping("/getCommentsByPage")
-    public ApiResult<PageInfo<CommentVo>> getCommentsByPage(@RequestBody CommentQuery commentQuery){
-        PageInfo<CommentVo>  commentVoPageInfo= commentService.getCommentsByPage(commentQuery);
+    public ApiResult<PageInfo<CommentVo>> getCommentsByPage(@RequestBody CommentQuery commentQuery) {
+        PageInfo<CommentVo> commentVoPageInfo = commentService.getCommentsByPage(commentQuery);
         return ApiResult.SUCCESS(commentVoPageInfo);
     }
 
     @PostMapping("/{commentId}/reopen")
-    public ApiResult reopen(@PathVariable("commentId") String commentId){
+    public ApiResult reopen(@PathVariable("commentId") String commentId) {
         commentService.reopenById(commentId);
-        //todo websocket通知
+        //todo 异步提醒 或者放入队列提醒
+        messageService.publishCommentMeassage(commentId, CommentOperate.REOPEN);
         return ApiResult.SUCCESS();
     }
 
     @PostMapping("/{commentId}/resolve")
-    public ApiResult resolve(@PathVariable("commentId") String commentId){
+    public ApiResult resolve(@PathVariable("commentId") String commentId) {
         commentService.resolveById(commentId);
-        //todo websocket通知
+        //todo 异步提醒 或者放入队列提醒
+        messageService.publishCommentMeassage(commentId, CommentOperate.RESOLVE);
         return ApiResult.SUCCESS();
     }
-
-
 
 
 }

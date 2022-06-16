@@ -19,7 +19,7 @@ public interface ITbCommentIndexService extends IService<TbCommentIndex> {
 
     boolean addReplyCountById(String id);
 
-    String getObjectIdById(String commentId);
+    String getPojectIdById(String commentId);
 
     boolean reopenById(String commentId);
 

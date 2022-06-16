@@ -5,6 +5,7 @@ var userId = null;
 function connect() {
     var host = window.location.host; // 带有端口号
     userId = GetQueryString("userId");
+    projectId = $("#projectId").val();
     console.log("userId:" + userId);
     var socket = new SockJS('/websocket');
     stompClient = Stomp.over(socket);
@@ -18,7 +19,7 @@ function connect() {
                 writeToScreen(response.body);
             });
 
-            stompClient.subscribe("/user/queue/comment", function (response) {
+            stompClient.subscribe("/user/queue/sync/comment/aaa", function (response) {
                 writeToScreen(response.body);
             });
 

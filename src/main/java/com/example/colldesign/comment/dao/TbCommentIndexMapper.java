@@ -24,7 +24,7 @@ public interface TbCommentIndexMapper extends BaseMapper<TbCommentIndex> {
     @Update("update tb_comment_index set reply_count=reply_count+1 where id = #{id}")
     boolean addReplyCountById(@Param("id")String id);
 
-    @Select("select object_id from tb_comment_index t where t.id=#{id}")
-    String getObjectIdById(@Param("id")String id);
+    @Select("select project_id from tb_comment_index t where t.id=#{id}")
+    String getPojectIdById(@Param("id")String id);
 
 }
