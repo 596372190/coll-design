@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>测试websocket协同设计时通知功能</title>
+    <script src="js/websocket-cd.js"></script>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/sockjs.min.js"></script>
+    <script src="js/stomp.min.js"></script>
+    <script id="code">
+        var DEBUG_FLAG = true;
+        $(function () {
+            //启动websocket
+            connect();
+        });
+
+        function send() {
+            var msg = $("#msg").val();
+            var test = "projectId";
+            stompClient.send("/app/send/" + test, {}, msg);
+        }
+
+        function sendToUser() {
+            var msg = $("#msg").val();
+            var toUserId = $("#userId").val();
+            var data = {"fromUserId": userId, "toUserId": toUserId, "msg": msg};
+            stompClient.send("/app/sendToUser", {}, JSON.stringify(data));
+        }
+
+        function openProjectAndLink() {
+            var userId = $("#userId").val();
+            var projectId = $("#projectId").val();
+            var data = {"userId": userId, "projectId": projectId};
+            stompClient.send("/app/openProject", {}, JSON.stringify(data));
+        }
+    </script>
+</head>
+
+<body style="margin: 0px;padding: 0px;overflow: hidden; ">
+<!-- 显示消息-->
+<textarea id="debuggerInfo" style="width:100%;height:200px;"></textarea>
+<!-- 发送消息-->
+<div>用户：<input type="text" id="userId"></input></div>
+<div>消息：<input type="text" id="msg"></input></div>
+<div>项目：<input type="text" id="projectId"></input></div>
+<div><input type="button" value="打开某个项目，创建连接" onclick="openProjectAndLink()"></input></div>
+<div><input type="button" value="发送消息" onclick="send()"></input></div>
+
+</body>
+</html>

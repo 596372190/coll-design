@@ -1,0 +1,111 @@
+server:
+  port: 8080
+  #防止cookie冲突
+  servlet:
+    session:
+      cookie:
+        name: springsecurity-sso-session
+#授权服务器地址
+oauth:
+  server:
+    url: http://localhost:8080
+
+#与授权服务器对应的配置
+security:
+  oauth2:
+    client:
+      #客户端id
+      client-id: client
+      #秘钥
+      client-secret: ihyx
+      #认证url 获取授权码
+      user-authorization-uri: ${oauth.server.url}/oauth/authorize
+      #获取token
+      access-token-uri: ${oauth.server.url}/oauth/token
+    resource:
+      jwt:
+        #获取jwt令牌
+        key-uri: ${oauth.server.url}/oauth/token_key
+
+spring:
+  thymeleaf:
+    cache: false
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_empty
+  main:
+    web-application-type: servlet
+  mvc:
+    static-path-pattern: /**
+    view:
+      prefix: /
+      suffix: .html
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/META-INF/resources/
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: dragon
+    password: dragon
+    url: jdbc:mysql://localhost:3306/comment?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    type: com.alibaba.druid.pool.DruidDataSource
+    initial-size: 5
+    minIdle: 5
+    maxActive: 30
+    maxWait: 60000
+    validationQuery: SELECE 1
+    validationQueryPostgresql: SELECE 1 FROM DUAL
+    validationQueryOracle: SELECE 1 FROM DUAL
+    validationQueryMysql: SELECE 1
+    validationQuerySqlServer: SELECE 1
+    validationQuerySqllite: SELECE 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    removeAbandoned: true
+    maxOpenPreparedStatements: 30
+    removeAbandonedTimeout: 1800
+    logAbandoned: true
+    filters: stat,wall,log4j
+    maxPoolPrepareStatementPerConnectionSize: 20
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    statViewServlet:
+      allow: true
+      loginUsername: admin
+      loginPassword: admin
+      urlPattern: /druid/*
+      resetEnable: false
+    web-stat-filter:
+      enabled: true
+      profile-enable: true
+      urlPattern: /*
+      exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+####spring配置
+
+mybatis-plus:
+  mapper-locations: classpath:com/example/colldesign/**/mapper/*Mapper.xml
+  typeAliasesPackage: com.example.colldesign.**.model
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+mybatics:
+  mapper-locations: classpath:com/example/colldesign/**/mapper/*Mapper.xml
+  typeAliasesPackage: com.example.colldesign.**.model
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+pagehelper:
+  reasonable: true
+  support-methods-argument: true
+  return-page-info: check;
+  auto-runtime-dialect: true
+  params: count=countsql
+
+
+
