@@ -28,6 +28,11 @@ security:
         key-uri: ${oauth.server.url}/oauth/token_key
 
 spring:
+  # 配置文件上传大小限制
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   thymeleaf:
     cache: false
   jackson:
@@ -107,5 +112,9 @@ pagehelper:
   auto-runtime-dialect: true
   params: count=countsql
 
-
+minio:
+  endpoint: http://localhost:9900
+  accessKey: comment
+  secretKey: comment123
+  bucketName: comment
 
