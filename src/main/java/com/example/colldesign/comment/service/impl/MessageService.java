@@ -1,7 +1,5 @@
 package com.example.colldesign.comment.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.json.JSONUtil;
 import com.example.colldesign.comment.enums.CommentOperate;
 import com.example.colldesign.comment.model.TbCommentIndex;
 import com.example.colldesign.comment.service.ITbCommentIndexService;
@@ -75,19 +73,19 @@ public class MessageService {
                 break;
         }
         message.setOperate(commentOperate.getOperate());
-        ObjectMapper objectMapper =new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-        String mes="";
-        try{
-            mes=objectMapper.writeValueAsString(message);
-        }catch (Exception e){
+        String mes = "";
+        try {
+            mes = objectMapper.writeValueAsString(message);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Set<String> nameSet = userWsMap.get(commentVo.getProjectId());
         for (String name : nameSet) {
             template.convertAndSendToUser(name, syncDestination + commentVo.getProjectId(), mes);
         }
-        objectMapper=null;
+        objectMapper = null;
     }
 
     public void publishCommentMeassage(String commentId, CommentOperate commentOperate) {

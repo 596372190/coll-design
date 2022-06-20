@@ -15,7 +15,7 @@ public class FileUploader {
             throws IOException, NoSuchAlgorithmException, InvalidKeyException {
         try {
             // Create a minioClient with the MinIO server playground, its access key and secret key.
-            MinioClient minioClient =MinioClient.builder().endpoint("http://localhost:9900").credentials("comment", "comment123").build();
+            MinioClient minioClient = MinioClient.builder().endpoint("http://localhost:9900").credentials("comment", "comment123").build();
 
             // Make 'asiatrip' bucket if not exist.
             boolean found =

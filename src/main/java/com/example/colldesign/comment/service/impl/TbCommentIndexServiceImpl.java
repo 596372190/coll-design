@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 
 /**
@@ -45,10 +44,10 @@ public class TbCommentIndexServiceImpl extends ServiceImpl<TbCommentIndexMapper,
     public boolean reopenById(String commentId) {
         UpdateWrapper<TbCommentIndex> updateWrapper = new UpdateWrapper<>();
         //state变为枚举
-        updateWrapper.set("state",2);
+        updateWrapper.set("state", 2);
         updateWrapper.set("reopened_time", DateUtil.date());
         updateWrapper.set("reopened_user_id", "userId-11111");
-        updateWrapper.eq("id",commentId);
+        updateWrapper.eq("id", commentId);
         return this.update(updateWrapper);
     }
 
@@ -56,10 +55,16 @@ public class TbCommentIndexServiceImpl extends ServiceImpl<TbCommentIndexMapper,
     public boolean resolveById(String commentId) {
         UpdateWrapper<TbCommentIndex> updateWrapper = new UpdateWrapper<>();
         //state变为枚举
-        updateWrapper.set("state",1);
+        updateWrapper.set("state", 1);
         updateWrapper.set("resolved_time", DateUtil.date());
         updateWrapper.set("resolved_user_id", "userId-11111");
-        updateWrapper.eq("id",commentId);
+        updateWrapper.eq("id", commentId);
         return this.update(updateWrapper);
+    }
+
+    @Override
+    @Transactional
+    public boolean updateAttachmentIdById(String commentId, String attachmentId, String thumbnailId) {
+        return this.getBaseMapper().updateAttachmentIdById(commentId, attachmentId, thumbnailId);
     }
 }

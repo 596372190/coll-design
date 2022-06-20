@@ -22,9 +22,10 @@ public interface TbCommentIndexMapper extends BaseMapper<TbCommentIndex> {
     List<String> getSubCommentIdsById(@Param("id") String id);
 
     @Update("update tb_comment_index set reply_count=reply_count+1 where id = #{id}")
-    boolean addReplyCountById(@Param("id")String id);
+    boolean addReplyCountById(@Param("id") String id);
 
     @Select("select project_id from tb_comment_index t where t.id=#{id}")
-    String getPojectIdById(@Param("id")String id);
+    String getPojectIdById(@Param("id") String id);
 
+    boolean updateAttachmentIdById(@Param("id") String commentId, @Param("attachmentId") String attachmentId, @Param("thumbnailId") String thumbnailId);
 }

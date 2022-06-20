@@ -21,6 +21,6 @@ public class TbCommentInfoServiceImpl extends ServiceImpl<TbCommentInfoMapper, T
 
     @Override
     public boolean updateMesssageById(String id, String message) {
-        return this.getBaseMapper().updateMesssageById(id,message);
+        return this.getBaseMapper().updateMesssageById(id, message);
     }
 }

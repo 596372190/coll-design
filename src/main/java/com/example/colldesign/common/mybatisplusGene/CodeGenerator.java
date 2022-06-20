@@ -27,7 +27,7 @@ public class CodeGenerator {
     //包路径
     private static String packageSrc = "com.example.colldesign";
     //表名
-    private static String tableName = "tb_comment_index";
+    private static String tableName = "tb_comment_attachment";
     //模块名称
     private static String modelName = "comment";
 

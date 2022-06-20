@@ -102,10 +102,16 @@ public class CommentVo {
     private String markId;
     private String markType;
 
+    private String attachmentId;
+    private String thumbnailId;
 
-    public CommentVo(TbCommentIndex commentIndex, TbCommentInfo commentInfo){
-        BeanUtil.copyProperties(commentInfo,this);
-        BeanUtil.copyProperties(commentIndex,this);
+    private AttachmentVo attachment;
+    private AttachmentVo thumbnail;
+
+
+    public CommentVo(TbCommentIndex commentIndex, TbCommentInfo commentInfo) {
+        BeanUtil.copyProperties(commentInfo, this);
+        BeanUtil.copyProperties(commentIndex, this);
     }
 
 }

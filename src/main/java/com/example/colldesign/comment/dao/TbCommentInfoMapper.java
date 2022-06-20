@@ -16,5 +16,5 @@ import org.apache.ibatis.annotations.Update;
 public interface TbCommentInfoMapper extends BaseMapper<TbCommentInfo> {
 
     @Update("update tb_comment_info set message=#{message} where id=#{id}")
-    boolean updateMesssageById(@Param("id") String id,@Param("message") String message);
+    boolean updateMesssageById(@Param("id") String id, @Param("message") String message);
 }

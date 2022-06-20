@@ -5,13 +5,12 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.example.colldesign.comment.vo.CommentVo">
         <id column="id" property="id"/>
+        <result column="project_id" property="projectId"/>
         <result column="document_id" property="documentId"/>
-        <result column="element_id" property="elementId"/>
+        <result column="document_type" property="documentType"/>
         <result column="workspace_id" property="workspaceId"/>
         <result column="version_id" property="versionId"/>
         <result column="parent_id" property="parentId"/>
-        <result column="object_id" property="objectId"/>
-        <result column="object_type" property="objectType"/>
         <result column="create_time" property="createTime"/>
         <result column="create_user_id" property="createUserId"/>
         <result column="update_time" property="updateTime"/>
@@ -22,6 +21,11 @@
         <result column="reopened_user_id" property="reopenedUserId"/>
         <result column="state" property="state"/>
         <result column="reply_count" property="replyCount"/>
+        <result column="mark_id" property="markId"/>
+        <result column="mark_type" property="markType"/>
+        <result column="attachment_id" property="attachmentId"/>
+        <result column="thumbnail_id" property="thumbnailId"/>
+
 
         <result column="message" property="message"/>
         <result column="element_occurrences" property="elementOccurrences"/>
@@ -34,11 +38,11 @@
 
 
     <select id="getCommentsByPage" resultMap="BaseResultMap">
-       select * from tb_comment_index t1 left join tb_comment_info t2 on t1.id=t2.id
+        select * from tb_comment_index t1 left join tb_comment_info t2 on t1.id=t2.id
         <where>
             t1.document_id=#{commentQuery.documentId}
             <if test="commentQuery.parentId==null or commentQuery.parentId==''">
-               and (t1.parent_id is null || t1.parent_id='')
+                and (t1.parent_id is null || t1.parent_id='')
             </if>
             <if test="commentQuery.parentId!=null and commentQuery.parentId!=''">
                 and t1.parent_id=#{commentQuery.parentId}

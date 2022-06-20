@@ -2,7 +2,6 @@ package com.example.colldesign.comment.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.colldesign.comment.model.TbCommentIndex;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,4 +23,6 @@ public interface ITbCommentIndexService extends IService<TbCommentIndex> {
     boolean reopenById(String commentId);
 
     boolean resolveById(String commentId);
+
+    boolean updateAttachmentIdById(String commentId, String id, String s);
 }

@@ -6,18 +6,20 @@ import com.example.colldesign.comment.model.TbCommentIndex;
 import com.example.colldesign.comment.service.CommentService;
 import com.example.colldesign.comment.service.ITbCommentIndexService;
 import com.example.colldesign.comment.service.impl.MessageService;
+import com.example.colldesign.comment.vo.AttachmentVo;
 import com.example.colldesign.comment.vo.CommentVo;
 import com.example.colldesign.comment.vo.query.CommentQuery;
 import com.example.colldesign.common.result.ApiResult;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.security.Principal;
 
 
@@ -110,5 +112,23 @@ public class TbCommentController {
         return ApiResult.SUCCESS();
     }
 
+
+    @ApiOperation(value = "评论照片附件保存")
+    @PostMapping(value = "/{commentId}/attachment")
+    public ApiResult<AttachmentVo> saveAttachment(@PathVariable("commentId") String commentId, @RequestParam(name = "file") MultipartFile file) {
+        try {
+            return ApiResult.SUCCESS(commentService.saveAttachment(commentId, file));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ApiResult.FAIL();
+    }
+
+
+    @ApiOperation(value = "获取评论附件")
+    @GetMapping("/{commentId}/attachment/{attachmentId}")
+    public ResponseEntity<byte[]> download(@PathVariable("commentId") String commentId, @PathVariable("attachmentId") String attachmentId) {
+        return commentService.download(commentId, attachmentId);
+    }
 
 }

@@ -2,10 +2,8 @@ package com.example.colldesign.comment.vo.query;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class CommentQuery extends BaseQueryVo{
+public class CommentQuery extends BaseQueryVo {
     private String documentId;
     private String parentId;
 

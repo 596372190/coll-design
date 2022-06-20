@@ -113,7 +113,7 @@ pagehelper:
   params: count=countsql
 
 minio:
-  endpoint: http://localhost:9900
+  endpoint: http://minio.dragon.com:9900
   accessKey: comment
   secretKey: comment123
   bucketName: comment
