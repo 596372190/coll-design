@@ -130,5 +130,4 @@ public class TbCommentController {
     public ResponseEntity<byte[]> download(@PathVariable("commentId") String commentId, @PathVariable("attachmentId") String attachmentId) {
         return commentService.download(commentId, attachmentId);
     }
-
 }
