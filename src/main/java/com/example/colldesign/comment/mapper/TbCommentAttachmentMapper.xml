@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.colldesign.comment.dao.TbCommentAttachmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.colldesign.comment.model.TbCommentAttachment">
+        <result column="id" property="id"/>
+        <result column="comment_id" property="commentId"/>
+        <result column="mime_type" property="mimeType"/>
+        <result column="file_name" property="fileName"/>
+        <result column="store_file_name" property="storeFileName"/>
+        <result column="store_path" property="storePath"/>
+        <result column="thumbnail_for_id" property="thumbnailForId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user_id" property="createUserId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , comment_id, mime_type, file_name, store_file_name, store_path, thumbnail_for_id, create_time, create_user_id
+    </sql>
+
+</mapper>
