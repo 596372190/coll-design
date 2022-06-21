@@ -6,17 +6,20 @@ import com.example.colldesign.comment.model.TbCommentIndex;
 import com.example.colldesign.comment.service.CommentService;
 import com.example.colldesign.comment.service.ITbCommentIndexService;
 import com.example.colldesign.comment.service.impl.MessageService;
+import com.example.colldesign.comment.util.MimetypeUtil;
 import com.example.colldesign.comment.vo.AttachmentVo;
 import com.example.colldesign.comment.vo.CommentVo;
 import com.example.colldesign.comment.vo.query.CommentQuery;
 import com.example.colldesign.common.result.ApiResult;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +32,7 @@ import java.security.Principal;
  * @author dragon
  * @since 2022-06-15
  */
+@Api(tags = "TbCommentController", description = "评论管理")
 @RestController
 @RequestMapping("/comment")
 public class TbCommentController {
@@ -44,6 +48,7 @@ public class TbCommentController {
     @Autowired
     private MessageService messageService;
 
+
     @PostMapping("/joinDesign/{projectId}")
     public void joinDesign(@PathVariable("projectId") String projectId, Principal principal) {
         try {
@@ -53,6 +58,7 @@ public class TbCommentController {
         }
     }
 
+    @ApiOperation("创建评论")
     @PostMapping("/createComment")
     public ApiResult<CommentVo> createComment(@RequestBody CommentVo commentVo) {
         CommentVo vo = commentService.createComment(commentVo);
@@ -63,6 +69,10 @@ public class TbCommentController {
     }
 
 
+    @ApiOperation("根据id获取评论")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
+    })
     @GetMapping("/{commentId}")
     public ApiResult<CommentVo> getComment(@PathVariable("commentId") String commentId) {
         CommentVo vo = commentService.getById(commentId);
@@ -70,6 +80,10 @@ public class TbCommentController {
         return success;
     }
 
+    @ApiOperation("修改评论文本内容")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
+    })
     @PostMapping("/{commentId}")
     public ApiResult<CommentVo> updateComment(@RequestBody CommentVo commentVo) {
         CommentVo vo = commentService.updateComment(commentVo.getId(), commentVo.getMessage());
@@ -79,8 +93,9 @@ public class TbCommentController {
         return success;
     }
 
+    @ApiOperation("根据id删除评论")
+    @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
     @DeleteMapping("/{commentId}")
-    @Transactional
     public ApiResult deleteComment(@PathVariable("commentId") String commentId) {
         TbCommentIndex commentIndex = commentIndexService.getById(commentId);
         boolean flag = commentService.deleteComment(commentId);
@@ -90,12 +105,15 @@ public class TbCommentController {
         return success;
     }
 
+    @ApiOperation("分页获取评论列表")
     @PostMapping("/getCommentsByPage")
     public ApiResult<PageInfo<CommentVo>> getCommentsByPage(@RequestBody CommentQuery commentQuery) {
         PageInfo<CommentVo> commentVoPageInfo = commentService.getCommentsByPage(commentQuery);
         return ApiResult.SUCCESS(commentVoPageInfo);
     }
 
+    @ApiOperation("根据id重开评论")
+    @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
     @PostMapping("/{commentId}/reopen")
     public ApiResult reopen(@PathVariable("commentId") String commentId) {
         commentService.reopenById(commentId);
@@ -104,6 +122,8 @@ public class TbCommentController {
         return ApiResult.SUCCESS();
     }
 
+    @ApiOperation("根据id关闭评论")
+    @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
     @PostMapping("/{commentId}/resolve")
     public ApiResult resolve(@PathVariable("commentId") String commentId) {
         commentService.resolveById(commentId);
@@ -112,20 +132,27 @@ public class TbCommentController {
         return ApiResult.SUCCESS();
     }
 
-
-    @ApiOperation(value = "评论照片附件保存")
+    @ApiOperation("根据id保存图片附件")
     @PostMapping(value = "/{commentId}/attachment")
     public ApiResult<AttachmentVo> saveAttachment(@PathVariable("commentId") String commentId, @RequestParam(name = "file") MultipartFile file) {
         try {
-            return ApiResult.SUCCESS(commentService.saveAttachment(commentId, file));
+            if (MimetypeUtil.isImage(file)) {
+                return ApiResult.SUCCESS(commentService.saveAttachment(commentId, file));
+            } else {
+                return ApiResult.FAIL().setMsg("请正确上传图片!");
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            return ApiResult.FAIL().setMsg(e.getMessage());
         }
-        return ApiResult.FAIL();
     }
 
 
-    @ApiOperation(value = "获取评论附件")
+    @ApiOperation(value = "根据id获取评论图片")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true),
+            @ApiImplicitParam(paramType = "path", name = "attachmentId", value = "附件id", required = true)
+    })
     @GetMapping("/{commentId}/attachment/{attachmentId}")
     public ResponseEntity<byte[]> download(@PathVariable("commentId") String commentId, @PathVariable("attachmentId") String attachmentId) {
         return commentService.download(commentId, attachmentId);

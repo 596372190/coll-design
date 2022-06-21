@@ -1,5 +1,6 @@
 package com.example.colldesign.comment.vo;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel("用户对象")
 public class UserVo {
 
     private String company;

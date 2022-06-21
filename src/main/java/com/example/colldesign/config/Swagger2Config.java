@@ -1,5 +1,7 @@
 package com.example.colldesign.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -22,13 +24,26 @@ import java.util.List;
  */
 @Configuration
 @EnableSwagger2
+@EnableKnife4j
 public class Swagger2Config {
+
+    @Value("${swagger.title}")
+    private String title;
+    @Value("${swagger.description}")
+    private String description;
+    @Value("${swagger.contact}")
+    private String contact;
+    @Value("${swagger.version}")
+    private String version;
+    @Value("${swagger.basePackage}")
+    private String basePackage;
+
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.example.colldesign"))
+                .apis(RequestHandlerSelectors.basePackage(basePackage))
                 .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(securitySchemes())
@@ -37,10 +52,10 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("dragon评论功能")
-                .description("dragon评论功能")
-                .contact("dragon")
-                .version("1.0")
+                .title(title)
+                .description(description)
+                .contact(contact)
+                .version(version)
                 .build();
     }
 

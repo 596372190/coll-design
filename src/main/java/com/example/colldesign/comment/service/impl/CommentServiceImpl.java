@@ -75,7 +75,9 @@ public class CommentServiceImpl implements CommentService {
         TbCommentIndex commentIndex = commentIndexService.getById(commentId);
         TbCommentInfo commentInfo = commentInfoService.getById(commentId);
         CommentVo commentVo = new CommentVo(commentIndex, commentInfo);
-        //判断该评论是否可以删除或关闭
+        //todo 判断该评论是否可以删除或关闭
+        commentVo.setCanDelete(true);
+        commentVo.setCanResolveOrReopen(true);
         //1.如果是子评论不能重开或关闭
         if (StrUtil.isNotBlank(commentIndex.getParentId())) {
             commentVo.setCanResolveOrReopen(false);

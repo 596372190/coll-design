@@ -72,4 +72,8 @@ public class ApiResult<T> implements Response, Serializable {
         return new ApiResult<>(CommonCode.FAIL, data);
     }
 
+    public ApiResult setMsg(String msg) {
+        this.msg = msg;
+        return this;
+    }
 }

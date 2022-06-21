@@ -5,6 +5,8 @@ server:
     session:
       cookie:
         name: springsecurity-sso-session
+  compression:
+    enabled: true
 #授权服务器地址
 oauth:
   server:
@@ -117,4 +119,12 @@ minio:
   accessKey: comment
   secretKey: comment123
   bucketName: comment
+
+swagger:
+  title: 评论功能
+  description: 评论功能
+  contact: dragon
+  version: 1.0
+  basePackage: com.example.colldesig
+
 
