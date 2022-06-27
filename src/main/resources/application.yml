@@ -48,6 +48,7 @@ spring:
     view:
       prefix: /
       suffix: .html
+    dispatch-options-request: true
   web:
     resources:
       static-locations: classpath:/static/,classpath:/META-INF/resources/

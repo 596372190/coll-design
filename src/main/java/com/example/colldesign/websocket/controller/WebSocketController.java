@@ -2,14 +2,19 @@ package com.example.colldesign.websocket.controller;
 
 import com.example.colldesign.websocket.vo.Chat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.messaging.support.MessageHeaderInitializer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -46,8 +51,12 @@ public class WebSocketController {
         // 将用户设置给chat对象的from属性
         chat.setFrom(from);
         // 再将消息发送出去，发送的目标用户就是 chat 对象的to属性值
+        Map<String,Object> map = new HashMap<>();
+        map.put("mode","add");
+        map.put("message-id","123123");
         template.convertAndSendToUser(chat.getTo(),
-                "/queue/chat", chat);
+                "/queue/chat", chat,map);
+
     }
 
     @GetMapping("/sendToAllByTemplate")

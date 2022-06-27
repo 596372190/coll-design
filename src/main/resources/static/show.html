@@ -17,7 +17,11 @@
 
         function send() {
             var msg = $("#msg").val();
-            stompClient.send("/app/send", {}, msg);
+            stompClient.send("/app/send",
+                {"projectId":"62909599e8a0fd221cddb5f7",
+                "documentId":"62909599e8a0fd221cddb62f",
+                "text":"创建评论与标注"},
+                msg);
         }
 
         function sendToUser() {

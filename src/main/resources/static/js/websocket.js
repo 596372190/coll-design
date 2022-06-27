@@ -11,6 +11,8 @@ function connect() {
     stompClient.connect({}, function (frame) {
             writeToScreen("connected: " + frame);
             stompClient.subscribe('/topic', function (response) {
+                console.log("response");
+                console.log(response);
                 writeToScreen(response.body);
             });
 
