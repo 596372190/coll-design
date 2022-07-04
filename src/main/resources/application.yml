@@ -92,6 +92,28 @@ spring:
       profile-enable: true
       urlPattern: /*
       exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+
+  rabbitmq:
+    host: dragon.rabbitmq.com
+    #账号密码 默认有的
+    username: admin
+    password: 123456
+    #rbbitmq虚拟主机路径
+    virtual-host: /
+    #rabbitmq的端口号 也是默认的
+    port: 5672
+    #消费者配置
+    listener:
+      simple:
+        acknowledge-mode: manual
+        #消费端监听的最大个数
+        max-concurrency: 10
+        concurrency: 1
+        prefetch: 1
+    #生产者配置
+    publisher-returns: true
+    publisher-confirm-type: correlated
+
 ####spring配置
 
 mybatis-plus:

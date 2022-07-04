@@ -1,5 +1,6 @@
 package com.example.colldesign.comment.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel("用户对象")
+@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class UserVo {
 
     private String company;
