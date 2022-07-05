@@ -15,6 +15,7 @@ import com.example.colldesign.comment.vo.AttachmentVo;
 import com.example.colldesign.comment.vo.CommentVo;
 import com.example.colldesign.comment.vo.UserVo;
 import com.example.colldesign.comment.vo.query.CommentQuery;
+import com.example.colldesign.common.result.CommonPage;
 import com.example.colldesign.minio.util.MinioService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -171,7 +172,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public PageInfo<CommentVo> getCommentsByPage(CommentQuery commentQuery) {
+    public List<CommentVo> getComments(CommentQuery commentQuery) {
         //todo 完善用户的信息
         PageHelper.startPage(commentQuery.getPageNum(), commentQuery.getPageSize());
         List<CommentVo> commentVos = commentMapper.getCommentsByPage(commentQuery);
@@ -189,8 +190,7 @@ public class CommentServiceImpl implements CommentService {
                 completeResolvedBy(commentVo);
             }
         }
-        PageInfo<CommentVo> pageInfo = new PageInfo<CommentVo>(commentVos);
-        return pageInfo;
+        return commentVos;
     }
 
     @Override

@@ -154,6 +154,7 @@ mybatics:
     cache-enabled: true
     #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
 pagehelper:
+  helperDialect: mysql
   reasonable: true
   support-methods-argument: true
   return-page-info: check;

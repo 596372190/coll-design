@@ -10,7 +10,8 @@ import com.example.colldesign.comment.util.MimetypeUtil;
 import com.example.colldesign.comment.vo.AttachmentVo;
 import com.example.colldesign.comment.vo.CommentVo;
 import com.example.colldesign.comment.vo.query.CommentQuery;
-import com.example.colldesign.common.result.ApiResult;
+import com.example.colldesign.common.result.CommonPage;
+import com.example.colldesign.common.result.CommonResult;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 
 /**
@@ -60,9 +62,9 @@ public class TbCommentController {
 
     @ApiOperation("创建评论")
     @PostMapping("/createComment")
-    public ApiResult<CommentVo> createComment(@RequestBody CommentVo commentVo) {
+    public CommonResult<CommentVo> createComment(@RequestBody CommentVo commentVo) {
         CommentVo vo = commentService.createComment(commentVo);
-        ApiResult<CommentVo> success = ApiResult.SUCCESS(vo);
+        CommonResult<CommentVo> success = CommonResult.success(vo);
         //todo 异步提醒 或者放入队列提醒
         messageService.publishCommentMeassage(vo, CommentOperate.CREATE);
         return success;
@@ -74,9 +76,9 @@ public class TbCommentController {
             @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
     })
     @GetMapping("/{commentId}")
-    public ApiResult<CommentVo> getComment(@PathVariable("commentId") String commentId) {
+    public CommonResult<CommentVo> getComment(@PathVariable("commentId") String commentId) {
         CommentVo vo = commentService.getById(commentId);
-        ApiResult<CommentVo> success = ApiResult.SUCCESS(vo);
+        CommonResult<CommentVo> success = CommonResult.success(vo);
         return success;
     }
 
@@ -85,9 +87,9 @@ public class TbCommentController {
             @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
     })
     @PostMapping("/{commentId}")
-    public ApiResult<CommentVo> updateComment(@RequestBody CommentVo commentVo) {
+    public CommonResult<CommentVo> updateComment(@RequestBody CommentVo commentVo) {
         CommentVo vo = commentService.updateComment(commentVo.getId(), commentVo.getMessage());
-        ApiResult<CommentVo> success = ApiResult.SUCCESS(vo);
+        CommonResult<CommentVo> success = CommonResult.success(vo);
         //todo 异步提醒 或者放入队列提醒
         messageService.publishCommentMeassage(vo, CommentOperate.UPDATE);
         return success;
@@ -96,10 +98,10 @@ public class TbCommentController {
     @ApiOperation("根据id删除评论")
     @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
     @DeleteMapping("/{commentId}")
-    public ApiResult deleteComment(@PathVariable("commentId") String commentId) {
+    public CommonResult deleteComment(@PathVariable("commentId") String commentId) {
         TbCommentIndex commentIndex = commentIndexService.getById(commentId);
         boolean flag = commentService.deleteComment(commentId);
-        ApiResult success = ApiResult.SUCCESS();
+        CommonResult success = CommonResult.success();
         //todo 异步提醒 或者放入队列提醒
         messageService.publishCommentMeassage(new CommentVo(commentIndex, null), CommentOperate.DELETE);
         return success;
@@ -107,43 +109,43 @@ public class TbCommentController {
 
     @ApiOperation("分页获取评论列表")
     @PostMapping("/getCommentsByPage")
-    public ApiResult<PageInfo<CommentVo>> getCommentsByPage(@RequestBody CommentQuery commentQuery) {
-        PageInfo<CommentVo> commentVoPageInfo = commentService.getCommentsByPage(commentQuery);
-        return ApiResult.SUCCESS(commentVoPageInfo);
+    public CommonResult<CommonPage<CommentVo>> getCommentsByPage(@RequestBody CommentQuery commentQuery) {
+        List<CommentVo> commentVos = commentService.getComments(commentQuery);
+        return CommonResult.success(CommonPage.restPage(commentVos));
     }
 
     @ApiOperation("根据id重开评论")
     @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
     @PostMapping("/{commentId}/reopen")
-    public ApiResult reopen(@PathVariable("commentId") String commentId) {
+    public CommonResult reopen(@PathVariable("commentId") String commentId) {
         commentService.reopenById(commentId);
         //todo 异步提醒 或者放入队列提醒
         messageService.publishCommentMeassage(commentId, CommentOperate.REOPEN);
-        return ApiResult.SUCCESS();
+        return CommonResult.success();
     }
 
     @ApiOperation("根据id关闭评论")
     @ApiImplicitParam(paramType = "path", name = "commentId", value = "评论id", required = true)
     @PostMapping("/{commentId}/resolve")
-    public ApiResult resolve(@PathVariable("commentId") String commentId) {
+    public CommonResult resolve(@PathVariable("commentId") String commentId) {
         commentService.resolveById(commentId);
         //todo 异步提醒 或者放入队列提醒
         messageService.publishCommentMeassage(commentId, CommentOperate.RESOLVE);
-        return ApiResult.SUCCESS();
+        return CommonResult.success();
     }
 
     @ApiOperation("根据id保存图片附件")
     @PostMapping(value = "/{commentId}/attachment")
-    public ApiResult<AttachmentVo> saveAttachment(@PathVariable("commentId") String commentId, @RequestParam(name = "file") MultipartFile file) {
+    public CommonResult<AttachmentVo> saveAttachment(@PathVariable("commentId") String commentId, @RequestParam(name = "file") MultipartFile file) {
         try {
             if (MimetypeUtil.isImage(file)) {
-                return ApiResult.SUCCESS(commentService.saveAttachment(commentId, file));
+                return CommonResult.success(commentService.saveAttachment(commentId, file));
             } else {
-                return ApiResult.FAIL().setMsg("请正确上传图片!");
+                return CommonResult.failed().setMessage("请正确上传图片!");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return ApiResult.FAIL().setMsg(e.getMessage());
+            return CommonResult.failed().setMessage(e.getMessage());
         }
     }
 

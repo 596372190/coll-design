@@ -1,6 +1,6 @@
 package com.example.colldesign.minio.controller;
 
-import com.example.colldesign.common.result.ApiResult;
+import com.example.colldesign.common.result.CommonResult;
 import com.example.colldesign.minio.util.MinioService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,8 +20,8 @@ public class MinioCotroller {
 
     @ApiOperation(value = "minio上传测试")
     @PostMapping(value = "/upload", headers = "content-type=multipart/form-data")
-    public ApiResult<String> upload(@ApiParam @RequestParam(name = "file") MultipartFile file) {
-        return ApiResult.SUCCESS(minioService.upload(file));
+    public CommonResult<String> upload(@ApiParam @RequestParam(name = "file") MultipartFile file) {
+        return CommonResult.success(minioService.upload(file));
     }
 
     @ApiOperation(value = "minio下载测试")
@@ -38,15 +38,15 @@ public class MinioCotroller {
 
     @ApiOperation(value = "上传缩略图")
     @PostMapping(value = "/uploadThumbnail", headers = "content-type=multipart/form-data")
-    public ApiResult<String> uploadThumbnail(@ApiParam @RequestParam(name = "file") MultipartFile file) {
-        return ApiResult.SUCCESS(minioService.uploadThumbnailByFixWithYMDH(file, 350, 234));
+    public CommonResult<String> uploadThumbnail(@ApiParam @RequestParam(name = "file") MultipartFile file) {
+        return CommonResult.success(minioService.uploadThumbnailByFixWithYMDH(file, 350, 234));
     }
 
     @ApiOperation(value = "上传缩略图")
     @DeleteMapping(value = "/delete")
-    public ApiResult removeObjects(String bucketName, String filePaths) {
+    public CommonResult removeObjects(String bucketName, String filePaths) {
         minioService.removeObjects(bucketName, Arrays.asList(filePaths.split(",")));
-        return ApiResult.SUCCESS();
+        return CommonResult.success();
     }
 
 }

@@ -8,8 +8,8 @@ import lombok.Data;
 @ApiModel(description = "评论查询请求对象")
 public class CommentQuery extends BaseQueryVo {
 
-    @ApiModelProperty(value = "文档ID")
-    private String documentId;
+    @ApiModelProperty(value = "项目ID")
+    private String projectId;
     @ApiModelProperty(value = "评论父ID")
     private String parentId;
 

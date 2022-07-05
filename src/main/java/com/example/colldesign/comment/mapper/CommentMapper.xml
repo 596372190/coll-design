@@ -28,19 +28,16 @@
 
 
         <result column="message" property="message"/>
-        <result column="element_occurrences" property="elementOccurrences"/>
-        <result column="element_query" property="elementQuery"/>
         <result column="angle" property="angle"/>
         <result column="camera_viewport" property="cameraViewport"/>
-        <result column="is_perspective" property="isPerspective"/>
         <result column="view_matrix" property="viewMatrix"/>
     </resultMap>
 
 
     <select id="getCommentsByPage" resultMap="BaseResultMap">
-        select * from tb_comment_index t1 left join tb_comment_info t2 on t1.id=t2.id
+        select t1.*,t2.message,t2.camera_viewport,view_matrix from tb_comment_index t1 left join tb_comment_info t2 on t1.id=t2.id
         <where>
-            t1.document_id=#{commentQuery.documentId}
+            t1.project_id=#{commentQuery.projectId}
             <if test="commentQuery.parentId==null or commentQuery.parentId==''">
                 and (t1.parent_id is null || t1.parent_id='')
             </if>
